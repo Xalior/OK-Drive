@@ -1,0 +1,23 @@
+{
+  "name": "OK-Drive",
+  "version": "1.0.0",
+  "description": "I was disappointed to find no rhythm games with OK Go's music, so I tried to write me own...",
+  "main": "./public/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/es6-promise": "0.0.32",
+    "babylonjs": "^2.4.1",
+    "csv": "^1.1.0",
+    "ts-loader": "^1.2.1",
+    "ts-promise": "^0.3.4",
+    "typescript": "^2.0.10",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server  --content-base public/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
