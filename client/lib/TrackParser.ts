@@ -45,15 +45,13 @@ function generateFilters(completed) {
     Promise.all([
         generateLowPassFilter()
     ]).then(() => {
+        console.log("generating BPM");
         if(track.buffer.duration>30) {
             var clip = getClip(30,
                 (track.buffer.duration/2)-15, track.data_lowpass);
-            console.log(clip.length);
             var sample = getSampleClip(clip, 900);
-            console.log(sample.length);
             var nSample = normalizeArrayP(sample);
-            var count = countFlatLineGroupings(nSample);
-
+            track.bpm = countFlatLineGroupings(nSample).length;
         }
     }).then(() => {
         console.log("generating pace data");
@@ -62,9 +60,18 @@ function generateFilters(completed) {
             var beats = generateClipBeats(beatCountLength, trackPiece, track.data_lowpass);
             var sample = getSampleClip(beats, beatCountSamples);
             var nSample = normalizeArrayP(sample);
-            var beatCount = countFlatLineGroupings(nSample);
+            var beatCount = countFlatLineGroupings(nSample).length;
             track.data_rate.push(beatCount);
         }
+    }).then(() => {
+        console.log("flagging beats");
+        var data_beats = countFlatLineGroupings(getSampleClip(track.data_lowpass, track.buffer.duration*20));
+        console.log('sample for beatsing: ',track.buffer.duration,data_beats.length)
+        track.data_beats = new Array();
+        data_beats.forEach((beat) => {
+            track.data_beats.push(Math.floor(((beat/20)*44100)+0.1));
+        });
+        console.log(track.data_beats);
     }).then(() => {
         completed();
     });
@@ -144,13 +151,12 @@ function getSampleClip(data, samples) {
 }
 
 function countFlatLineGroupings(data) {
-
     var groupings = 0;
     var newArray = normalizeArrayP(data);
+    var timings = new Array();
 
     var max = getMax(newArray);
     var min = getMin(newArray);
-    var count = 0;
     var threshold = Math.round((max - min) * 0.2);
 
     for (var i = 0; i < newArray.length; i++) {
@@ -160,11 +166,11 @@ function countFlatLineGroupings(data) {
             newArray[i + 2] < threshold &&
             newArray[i + 3] < threshold &&
             newArray[i + 4] < threshold) {
-            count++;
+            timings.push(i);
         }
     }
 
-    return count;
+    return timings;
 }
 
 function getClip(length, startTime, data) {

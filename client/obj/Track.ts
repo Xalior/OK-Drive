@@ -8,6 +8,7 @@ export class Track {
     data_original: Array<number>;
     data_lowpass: Array<number>;
     data_rate: Array<number>;
+    data_beats: Array<number>;
     name: String;
     bpm: number;
     artist: String;

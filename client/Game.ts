@@ -107,10 +107,7 @@ export class Game {
         // connect the AudioBufferSourceNode to the
         // destination so we can hear the sound
         source.connect(this.track.context.destination);
-
-        console.log('ready to start');
-        console.log(source);
-        // start the source playing
-        source.start();
+      // start the source playing
+//        source.start();
     }
 }
